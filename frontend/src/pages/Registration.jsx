@@ -13,11 +13,11 @@ function Registration() {
   const [Error,setError]=useState("");
 
   const handleSubmit =async(e)=>{
-    e.preventDefault();
-    const formdata = new FormData();
-    formdata.append("fullname",fullname);
-    formdata.append("email",email);
-    formdata.append("password",password);
+      e.preventDefault();
+      const formdata = new FormData();
+      formdata.append("fullname",fullname);
+      formdata.append("email",email);
+      formdata.append("password",password);
       
     
     try{
@@ -25,6 +25,9 @@ function Registration() {
         "/stud_registration",
         formdata,
       );
+      localStorage.setItem("fullName", fullname);
+      localStorage.setItem("email", email);
+      localStorage.setItem("password", password);
       alert("Registered Successfully....")
       navigate("/login");
     }

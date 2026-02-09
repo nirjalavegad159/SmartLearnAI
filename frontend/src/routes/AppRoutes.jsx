@@ -33,7 +33,7 @@ function AppRoutes(){
                         <Route path="/professionaldetail" element={<ProfessionalDetail></ProfessionalDetail>}></Route>
                         <Route path="/acadmic" element={<Acedemic></Acedemic>}></Route>
                         <Route path="/blog" element={<Blog/>}></Route>
-                        <Route path="/blogdetail" element={<BlogDetail/>}></Route>
+                        <Route path="/blogdetail/:id" element={<BlogDetail/>}></Route>
                         <Route path="/blogform" element={<BlogForm></BlogForm>}></Route>
                   </Routes>
             // </BrowserRouter>

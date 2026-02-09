@@ -5,8 +5,18 @@ import {
   FiPhone,
   FiBookOpen,
 } from "react-icons/fi";
+import { useEffect, useState } from "react";
+import Api from "../services/Api";
 
 function SidebarProfile() {
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+      Api.get("/me")
+        .then(res => setUser(res.data))
+        .catch(() => alert("Unauthorized"));
+    }, []);
+    
   return (
     <div>
     <div className="shadow-lg flex-1 border rounded-xl  border-none shadow-xl  shadow-lg shadow-indigo-500/50 border-none bg-gray-50 display-static">
@@ -23,7 +33,7 @@ function SidebarProfile() {
 
         {/* Basic Details */}
         <div>
-          <h2 className="text-lg font-semibold">Nisha Yadav</h2>
+          <h2 className="text-lg font-semibold">{user?.fullname}</h2>
           <p className="text-sm text-gray-500">Student</p>
         </div>
       </div>

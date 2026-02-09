@@ -4,7 +4,7 @@ import { Link } from "react-router";
 function ImageSlider() {
   const images = [
     "/images/img1.jpeg",
-    "/images/img2.jprg",
+    "/images/img2.jpeg",
     "/images/img3.jpeg",
   ];
 

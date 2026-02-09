@@ -79,16 +79,16 @@ function Contact(){
                                     <div class="mx-0 mb-1 sm:mb-4">
                                         <div class="mx-0 mb-1 sm:mb-4">
                                             <label class="pb-1 text-xs uppercase tracking-wider" ></label>
-                                            <input type="text" autocomplete="off" placeholder="Your name" class="mb-2 w-full rounded-md border border-gray-400 py-2 pl-2 pr-4 shadow-md dark:text-gray-800 sm:mb-0" name="c_name" required/>
+                                            <input type="text" autoComplete="off" placeholder="Your name" class="mb-2 w-full rounded-md border border-gray-400 py-2 pl-2 pr-4 shadow-md dark:text-gray-800 sm:mb-0" name="c_name" required/>
                                         </div>
                                         <div class="mx-0 mb-1 sm:mb-4">
                                             <label class="pb-1 text-xs uppercase tracking-wider"></label>
-                                            <input type="email"  autocomplete="off"  placeholder="Your email address" class="mb-2 w-full rounded-md border border-gray-400 py-2 pl-2 pr-4 shadow-md dark:text-gray-800 sm:mb-0" name="c_email" required/>
+                                            <input type="email"  autoComplete="off"  placeholder="Your email address" class="mb-2 w-full rounded-md border border-gray-400 py-2 pl-2 pr-4 shadow-md dark:text-gray-800 sm:mb-0" name="c_email" required/>
                                         </div>
                                     </div>
                                     <div class="mx-0 mb-1 sm:mb-4">
                                         <label class="pb-1 text-xs uppercase tracking-wider"></label>
-                                        <textarea  name="c_message" cols="30" rows="5" autocomplete="off" placeholder="Write your message..." class="mb-2 w-full rounded-md border border-gray-400 py-2 pl-2 pr-4 shadow-md dark:text-gray-800 sm:mb-0" required></textarea>
+                                        <textarea  name="c_message" cols="30" rows="5" autoComplete="off" placeholder="Write your message..." class="mb-2 w-full rounded-md border border-gray-400 py-2 pl-2 pr-4 shadow-md dark:text-gray-800 sm:mb-0" required></textarea>
                                     </div>
                                 </div>
                                 <div class="text-center">

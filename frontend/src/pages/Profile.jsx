@@ -1,7 +1,9 @@
 import SidebarProfile from "../components/SidebarProfile";
 import ProfileTop from "../components/ProfileTop";
+
 function Profile()
 {
+ 
     return(
         <div class="inset-shadow-sm">
             <ProfileTop />

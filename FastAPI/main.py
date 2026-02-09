@@ -6,7 +6,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import Annotated
 from schemas.student import StudentModel
-from fastapi.middleware.cors import CORSMiddleware
 from routes import blog,student
 from fastapi.staticfiles import StaticFiles
 import os
@@ -23,14 +22,15 @@ app.mount("/blogimages", StaticFiles(directory="blogimages"), name="blogimages")
 
 
 origins = [
-      'http://localhost:5173',
-      'http://localhost:3000',
+      # 'http://localhost:3000'
+      "http://localhost:5173",
+      "http://127.0.0.1:5173"
 ]
 
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  
+    allow_origins=origins,  # React URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
