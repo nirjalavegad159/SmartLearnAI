@@ -2,6 +2,16 @@ import { useEffect, useState } from "react";
 import { useNavigate,Link } from "react-router-dom";
 import Api from "../services/Api";
 
+const validateEmail = (email) => {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+};
+
+const validatePassword = (password) => {
+  const regex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+  return regex.test(password);
+};
 function Registration() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -10,8 +20,14 @@ function Registration() {
   const [email,setemail] = useState("");
   const [password,setpassword] = useState("");
   const [confirmpassword,setconfirmpassword]=useState("");
-  const [Error,setError]=useState("");
+  // const [Error,setError]=useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [matchError, setMatchError] = useState("");
 
+
+
+ 
   const handleSubmit =async(e)=>{
       e.preventDefault();
       const formdata = new FormData();
@@ -19,37 +35,71 @@ function Registration() {
       formdata.append("email",email);
       formdata.append("password",password);
       
-    
-    try{
-      await Api.post(
-        "/stud_registration",
-        formdata,
-      );
-      localStorage.setItem("fullName", fullname);
-      localStorage.setItem("email", email);
-      localStorage.setItem("password", password);
-      alert("Registered Successfully....")
-      navigate("/login");
-    }
-    catch(error){
-      console.log(error);
-      alert("Registration Failed")
-    }
-  };
-  useEffect(() => {
-  if (confirmpassword && password !== confirmpassword) {
-    setError("Passwords do not match");
-  } else {
-    setError("");
-  }
-}, [password,confirmpassword]);
+      if (emailError || passwordError || matchError) {
+        alert("Fix validation errors first");
+        return;
+      }
 
-  // Open modal when page loads
+      if (!fullname || !email || !password || !confirmpassword) {
+        alert("All fields required");
+        return;
+      }
+    
+      try{
+        await Api.post(
+          "/stud_registration",
+          formdata,
+        );
+        localStorage.setItem("fullName", fullname);
+        localStorage.setItem("email", email);
+        localStorage.setItem("password", password);
+        alert("Registered Successfully....")
+        navigate("/login");
+      }
+      catch(error){
+        console.log(error);
+        alert("Registration Failed")
+      }
+    };
+   // Email validation
   useEffect(() => {
-  requestAnimationFrame(() => {
-    setOpen(true);
-  });
-}, []);
+    if (email === "") {
+      setEmailError("");
+    } else if (!validateEmail(email)) {
+      setEmailError("Invalid email format");
+    } else {
+      setEmailError("");
+    }
+  }, [email]);
+
+  // Password strength
+  useEffect(() => {
+    if (password === "") {
+      setPasswordError("");
+    } else if (!validatePassword(password)) {
+      setPasswordError(
+        "8+ chars, upper, lower, number & symbol required"
+      );
+    } else {
+      setPasswordError("");
+    }
+  }, [password]);
+
+  // Confirm password match
+  useEffect(() => {
+    if (confirmpassword && password !== confirmpassword) {
+      setMatchError("Passwords do not match");
+    } else {
+      setMatchError("");
+    }
+  }, [password, confirmpassword]);
+
+    // Open modal when page loads
+    useEffect(() => {
+    requestAnimationFrame(() => {
+      setOpen(true);
+    });
+  }, []);
 
   const handleClose = () => {
     setOpen(false);
@@ -112,7 +162,12 @@ function Registration() {
               className="w-full border rounded-md px-3 py-2
               focus:outline-none focus:ring-2 focus:ring-blue-500" value={email} onChange={(e)=>setemail(e.target.value)}
             />
+            {emailError && (
+              <p className="text-red-500 text-sm mt-1">{emailError}</p>
+            )}
+
           </div>
+
           
           {/* Password */}
           <div className="mb-4">
@@ -123,7 +178,12 @@ function Registration() {
               className="w-full border rounded-md px-3 py-2
               focus:outline-none focus:ring-2 focus:ring-blue-500" value={password} onChange={(e)=>setpassword(e.target.value)}
             />
+            {passwordError && (
+              <p className="text-red-500 text-sm mt-1">{passwordError}</p>
+            )}
+
           </div>
+          
           <div className="mb-4">
             <label className="block text-sm mb-1">Confirm Password</label>
             <input
@@ -134,9 +194,9 @@ function Registration() {
                value={confirmpassword} 
                onChange={(e)=>setconfirmpassword(e.target.value)}
             />
-            {Error && (
-  <p className="text-red-500 text-sm mt-1">{Error}</p>
-)}
+            {matchError && (
+            <p className="text-red-500 text-sm mt-1">{matchError}</p>
+          )}
           </div>
 
           {/* Login Button */}
