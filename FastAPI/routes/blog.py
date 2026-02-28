@@ -6,6 +6,8 @@ from database import SessionLocal
 import shutil
 import models
 
+router=APIRouter(tags=["Blog"])
+
 
 UPLOAD_DIR="blogimages"
 
@@ -16,37 +18,48 @@ def get_db():
     finally:
         db.close()
 
-router=APIRouter(tags=["Blog"])
 
 @router.post("/blog")
 def blog(
     blogername: str = Form(...),
-    blogerrole: Literal["Instructors","Learner","Employees"]=Form(...),
-    blogtitle :  str =Form(...),
-    blogdescription : str =Form(...),
-    blogimage: UploadFile =File(...),
-    db: Session=Depends(get_db)
+    blogerrole: Literal["Instructor","Learner","Employees"] = Form(...),
+    blogtitle: str = Form(...),
+    blogdescription: str = Form(...),
+    blogimage: str = Form(...),   # yahan sirf filename aayega
+    db: Session = Depends(get_db)
 ):
-    file_path = f"{UPLOAD_DIR}/{blogimage.filename}"
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(blogimage.file, buffer)
-
     db_blog = models.Blog(
         blogername=blogername,
         blogerrole=blogerrole,
         blogtitle=blogtitle,
         blogdescription=blogdescription,
-        blogimage=blogimage.filename
+        blogimage=blogimage   # <-- direct store
     )
 
     db.add(db_blog)
     db.commit()
     db.refresh(db_blog)
 
-    return{
-        "message":"Employee added Successfully",
-        "data":db_blog
-    }
+    return {"message": "Blog inserted"}
+
+
+
+# @router.post("/blog")
+# def blog(data: BlogCreate, db: Session = Depends(get_db)):
+
+#     db_blog = models.Blog(
+#         blogername=data.blogername,
+#         blogerrole=data.blogerrole,
+#         blogtitle=data.blogtitle,
+#         blogdescription=data.blogdescription,
+#         blogimage=data.blogimage
+#     )
+
+#     db.add(db_blog)
+#     db.commit()
+#     db.refresh(db_blog)
+
+#     return {"message": "Blog inserted successfully"}
 
 
 @router.get("/blog_display")
