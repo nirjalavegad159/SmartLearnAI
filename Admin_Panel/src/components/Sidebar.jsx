@@ -1,5 +1,5 @@
 import { FaHome, FaChartBar, FaShoppingCart, FaUsers } from "react-icons/fa";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 function Sidebar() {
   return (
