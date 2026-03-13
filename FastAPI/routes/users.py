@@ -99,3 +99,9 @@ def get_me(
         "fullname": user.fullname,
         "email": user.email
     }
+
+
+@router.get("/total_users")
+def total_users(db: Session = Depends(get_db)):
+    count = db.query(models.Users).count()
+    return {"total_users": count}

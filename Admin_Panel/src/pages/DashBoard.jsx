@@ -1,9 +1,29 @@
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
-import StatCard from "../components/StatCard";
+import StatCard from "../components/Statcard"
 import SalesChart from "../components/SalesChart";
+import axios from "axios";
+import { useState, useEffect } from "react";
 
 export default function Dashboard() {
+
+  const [users, setUsers] = useState(0);
+  const [students, setStudents] = useState(0);
+
+  useEffect(() => {
+    axios.get("http://localhost:8000/total_users")
+      .then((res) => {
+        console.log(res.data);
+        setUsers(res.data.total_users);
+      });
+
+    axios.get("http://localhost:8000/total_student")
+      .then((res) => {
+         console.log(res.data);
+        setStudents(res.data.total_student);
+      });
+
+  }, []);
   return (
     <div className="flex bg-gray-900 min-h-screen text-gray-200">
       <Sidebar />
@@ -13,8 +33,8 @@ export default function Dashboard() {
 
         {/* STAT CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-          <StatCard title="Customers" value="3,782" percent="11.01%" up />
-          <StatCard title="Orders" value="5,359" percent="9.05%" />
+          <StatCard title="Users" value={users} percent="11.01%" up />
+          <StatCard title="Student" value={students} percent="9.05%" />
           <StatCard title="Revenue" value="$20K" percent="10%" up />
         </div>
 
