@@ -8,14 +8,12 @@ import models
 
 router=APIRouter(tags=["Blog"])
 
-
-UPLOAD_DIR="images/BlogImages"
+UPLOAD_DIR = r"\\192.168.254.96\SharedVideos\BlogImages"
 
 
 @router.post("/blog")
 def blog(
     blogername: str = Form(...),
-<<<<<<< HEAD
     blogerrole: Literal["Instructor","Learner","Employees"]=Form(...),
     blogtitle :  str =Form(...),
     blogdescription : str =Form(...),
@@ -27,20 +25,12 @@ def blog(
         shutil.copyfileobj(blogimage.file, buffer)
 
 
-=======
-    blogerrole: Literal["Instructor","Learner","Employees"] = Form(...),
-    blogtitle: str = Form(...),
-    blogdescription: str = Form(...),
-    blogimage: str = Form(...),   # yahan sirf filename aayega
-    db: Session = Depends(get_db)
-):
->>>>>>> a34479f8775bb2e966ef613789c7933da6d02f84
     db_blog = models.Blog(
         blogername=blogername,
         blogerrole=blogerrole,
         blogtitle=blogtitle,
         blogdescription=blogdescription,
-        blogimage=blogimage   # <-- direct store
+       blogimage=blogimage.filename 
     )
 
     db.add(db_blog)
