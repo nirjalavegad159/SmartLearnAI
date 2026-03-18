@@ -25,7 +25,7 @@ app.add_middleware(
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
 
 app.include_router(blog.router)
@@ -35,21 +35,29 @@ app.include_router(course.router)
 app.include_router(contact.router)
 
 #Blog Image Folder
-UPLOAD_DIR="./images/BlogImages"
+UPLOAD_DIR=r"\\192.168.254.96\SharedVideos\BlogImages"
 os.makedirs(UPLOAD_DIR,exist_ok=True)
-app.mount("/BlogImages", StaticFiles(directory="D:/AI_Based_personalize_learning_recommandation_system/FastAPI/Images/BlogImages"), name="BlogImages")
+app.mount(
+    "/BlogImages", 
+    StaticFiles(directory=UPLOAD_DIR), 
+    name="BlogImages"
+)
 
-
-# Course Thumbnail Folder
+# Course Thumbnail Folder   
+THUMBNAIL_DIR =r"\\192.168.254.96\SharedVideos\Thumbnail"
+os.makedirs(THUMBNAIL_DIR, exist_ok=True)
 app.mount(
     "/Thumbnail",
-    StaticFiles(directory="D:/AI_Based_personalize_learning_recommandation_system/FastAPI/images/Thumbnail"),
+    StaticFiles(directory=THUMBNAIL_DIR),
     name="Thumbnail"
 )
 
+# Course Video Folder
+VIDEO_DIR =r"\\192.168.254.96\SharedVideos\Coursevideo"
+os.makedirs(VIDEO_DIR, exist_ok=True)
 app.mount(
     "/Coursevideo",
-    StaticFiles(directory="D:/AI_Based_personalize_learning_recommandation_system/FastAPI/images/Coursevideo"),
+    StaticFiles(directory=VIDEO_DIR ),
     name="Coursevideo"
 )
 

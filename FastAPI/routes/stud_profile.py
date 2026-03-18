@@ -127,3 +127,8 @@ def insert_update_profile(
 def students_display(db:Session=Depends(get_db)):
       data = db.query(models.Student).order_by(models.Student.stud_id.asc()).all()
       return data
+
+@router.get("/total_student")
+def total_student(db: Session = Depends(get_db)):
+    count = db.query(models.Student).count()
+    return {"total_student": count}
