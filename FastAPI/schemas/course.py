@@ -10,3 +10,7 @@ class CourseRequest(BaseModel):
     thumbnail: str   # URL or local filename
     video: str       # URL or local filename
     course_price: str
+
+class CourseRatingRequest(BaseModel):
+    course_id: int
+    rating: int

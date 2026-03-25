@@ -9,6 +9,7 @@ export default function Dashboard() {
 
   const [users, setUsers] = useState(0);
   const [students, setStudents] = useState(0);
+  const [instructor, setInstructor] = useState(0);
 
   useEffect(() => {
     axios.get("http://localhost:8000/total_users")
@@ -19,8 +20,14 @@ export default function Dashboard() {
 
     axios.get("http://localhost:8000/total_student")
       .then((res) => {
-         console.log(res.data);
+        console.log(res.data);
         setStudents(res.data.total_student);
+      });
+
+    axios.get("http://localhost:8000/total_instructor")
+      .then((res) => {
+        console.log(res.data);
+        setInstructor(res.data.total_instructor);
       });
 
   }, []);
@@ -34,8 +41,8 @@ export default function Dashboard() {
         {/* STAT CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
           <StatCard title="Users" value={users} percent="11.01%" up />
-          <StatCard title="Student" value={students} percent="9.05%" />
-          <StatCard title="Revenue" value="$20K" percent="10%" up />
+          <StatCard title="Students" value={students} percent="9.05%" />
+          <StatCard title="Instructors" value={instructor} percent="10%" up />
         </div>
 
         {/* CHART SECTION */}

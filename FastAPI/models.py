@@ -1,4 +1,4 @@
-from sqlalchemy import Column,Integer,String,Text,Date,ForeignKey,Time
+from sqlalchemy import Column,Integer,String,Text,Date,ForeignKey,Time,Float
 from database import Base
 from sqlalchemy.orm import relationship
 from datetime import date,datetime
@@ -6,7 +6,7 @@ from datetime import date,datetime
 
 
 class Users(Base):
-    __tablename__ = 'users'
+    __tablename__ = 'user'
 
     user_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     fullname = Column(String(50), nullable=False)
@@ -15,6 +15,7 @@ class Users(Base):
 
     students = relationship("Student", back_populates="user")
     contacts = relationship("Contact",back_populates="user")
+    instructor = relationship("Instructor",back_populates="user")
       # otp = Column(String(4), nullable=True)  
       # # Stores 4 digit OTP
       # otp_expiry = Column(DateTime, nullable=True)  
@@ -58,18 +59,15 @@ class City(Base):
 class Student(Base):
     __tablename__ = 'student'
 
-    stud_id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.user_id"))
-
+    stud_id = Column(Integer, primary_key=True, index=True,autoincrement=True)
+    user_id = Column(Integer, ForeignKey("user.user_id"))
     age = Column(Integer)
     education = Column(String(50))
-
     state_id = Column(Integer, ForeignKey("states.state_id"))
     city_id = Column(Integer, ForeignKey("cities.city_id"))
-
     skills = Column(String(255))
     language = Column(String(100))
-
+    
     user = relationship("Users", back_populates='students')
     state = relationship("State")
     city = relationship("City")
@@ -78,7 +76,7 @@ class Student(Base):
 class Contact(Base):
     __tablename__ = "contact"
     contact_id = Column(Integer,primary_key=True,autoincrement=True) 
-    user_id = Column(Integer,ForeignKey("users.user_id"))
+    user_id = Column(Integer,ForeignKey("user.user_id"))
     message = Column(Text)
     created_at = Column(Date, default=date.today)
 
@@ -101,3 +99,33 @@ class Course(Base):
       course_price=Column(Integer,nullable=False)
       course_date=Column(Date,default=date.today)
       course_time=Column(Time,default=datetime.now().time)
+      rating = Column(Float, default=0)
+      total_reviews = Column(Integer, default=0)
+
+class Instructor(Base):
+    __tablename__ = 'instructor'
+
+    instructor_id = Column(Integer, primary_key=True, index=True,autoincrement=True)
+    user_id = Column(Integer, ForeignKey("user.user_id"))
+
+    # Basic Info
+    photo = Column(Text,nullable=True)
+    gender = Column(String(10))
+    mobile = Column(String(15))
+
+    # Professional Info
+    qualification = Column(String(100))
+    experience = Column(String)
+    skills = Column(String(255))
+
+    # Teaching Info
+    language = Column(String(100))
+    bio = Column(Text)
+
+    # Location
+    state_id = Column(Integer, ForeignKey("states.state_id"))
+    city_id = Column(Integer, ForeignKey("cities.city_id"))
+
+    user = relationship("Users", back_populates='instructor')
+    state = relationship("State")
+    city = relationship("City")
