@@ -1,17 +1,12 @@
 from sqlalchemy import Column,Integer,String,Text,Date,ForeignKey,Time,Float
 from database import Base
 from sqlalchemy.orm import relationship
-from datetime import date,datetime
-
+from datetime import date, datetime
 
 
 class Users(Base):
     __tablename__ = 'user'
-
-    user_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     fullname = Column(String(50), nullable=False)
-    email = Column(String(50), nullable=False, unique=True)
-    password = Column(String(255), nullable=False)
 
     students = relationship("Student", back_populates="user")
     contacts = relationship("Contact",back_populates="user")
@@ -22,43 +17,38 @@ class Users(Base):
       # # Stores expiry time
       # is_verified = Column(Boolean, default=False)  
       # # Email verified or not
+    students = relationship("Student", back_populates="user")
+    contacts = relationship("Contact", back_populates="user")
 
 
 class Blog(Base):
-      __tablename__='blog'
-
-      blog_id = Column(Integer,primary_key=True,index=True,autoincrement=True)
-      blogername = Column(String(50),nullable=False)
-      blogerrole = Column(String(20),nullable=False)
-      blogimage = Column(String(255),nullable=False)
-      blogtitle =Column(Text,nullable=False)
-      blogdescription = Column(Text,nullable=False)
-      blogdate = Column(Date, default=date.today)
+    __tablename__ = 'blog'
+    blog_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    blogername = Column(String(50), nullable=False)
+    blogerrole = Column(String(20), nullable=False)
+    blogimage = Column(String(255), nullable=False)
+    blogtitle = Column(Text, nullable=False)
+    blogdescription = Column(Text, nullable=False)
+    blogdate = Column(Date, default=date.today)
 
 
 class State(Base):
     __tablename__ = 'states'
-
     state_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     state_name = Column(String(100), nullable=False, unique=True)
-
     cities = relationship("City", back_populates="state")
 
 
-class City(Base):  
+class City(Base):
     __tablename__ = 'cities'
-
     city_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     city_name = Column(String(100), nullable=False, unique=True)
     state_id = Column(Integer, ForeignKey("states.state_id"))
-
     state = relationship("State", back_populates="cities")
-
 
 
 class Student(Base):
     __tablename__ = 'student'
-
     stud_id = Column(Integer, primary_key=True, index=True,autoincrement=True)
     user_id = Column(Integer, ForeignKey("user.user_id"))
     age = Column(Integer)
@@ -79,28 +69,38 @@ class Contact(Base):
     user_id = Column(Integer,ForeignKey("user.user_id"))
     message = Column(Text)
     created_at = Column(Date, default=date.today)
-
-    user = relationship("Users", back_populates='contacts')
-
+    user = relationship("Users", back_populates="contacts")
 
 
 class Course(Base):
-      __tablename__='course'
+    __tablename__ = 'course'
+    # course_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    # course_title = Column(Text, nullable=False)
+    # category = Column(String(50), nullable=False)
+    # skill_level = Column(String(20), nullable=False)
+    # prerequisites = Column(Text, nullable=False)
+    # description = Column(Text, nullable=False)
+    # tag = Column(Text, nullable=False)
+    # thumbnail = Column(Text, nullable=False)
+    # video = Column(Text, nullable=False, unique=True)
+    # course_price = Column(Integer, nullable=False)
+    # course_date = Column(Date, default=date.today)
+    # course_time = Column(Time, default=datetime.now().time)
 
-      course_id=Column(Integer,primary_key=True,index=True,autoincrement=True)
-      course_title=Column(Text,nullable=False)
-      category=Column(String(50),nullable=False)
-      skill_level=Column(String(20),nullable=False)
-      prerequisites=Column(Text,nullable=False)
-      description=Column(Text,nullable=False)
-      tag=Column(Text,nullable=False)
-      thumbnail=Column(Text,nullable=False)
-      video=Column(Text,nullable=False,unique=True)
-      course_price=Column(Integer,nullable=False)
-      course_date=Column(Date,default=date.today)
-      course_time=Column(Time,default=datetime.now().time)
-      rating = Column(Float, default=0)
-      total_reviews = Column(Integer, default=0)
+    course_id=Column(Integer,primary_key=True,index=True,autoincrement=True)
+    course_title=Column(Text,nullable=False)
+    category=Column(String(50),nullable=False)
+    skill_level=Column(String(20),nullable=False)
+    prerequisites=Column(Text,nullable=False)
+    description=Column(Text,nullable=False)
+    tag=Column(Text,nullable=False)
+    thumbnail=Column(Text,nullable=False)
+    video=Column(Text,nullable=False,unique=True)
+    course_price=Column(Integer,nullable=False)
+    course_date=Column(Date,default=date.today)
+    course_time=Column(Time,default=datetime.now().time)
+    rating = Column(Float, default=0)
+    total_reviews = Column(Integer, default=0)
 
 class Instructor(Base):
     __tablename__ = 'instructor'

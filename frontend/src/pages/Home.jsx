@@ -7,6 +7,7 @@ import WhySmartAi from "../components/whySmartAi";
 function Home() {
   const [user, setUser] = useState(null);
 
+
   useEffect(() => {
     Api.get("/me")
       .then(res => setUser(res.data))

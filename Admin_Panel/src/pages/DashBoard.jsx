@@ -36,7 +36,7 @@ export default function Dashboard() {
       <Sidebar />
 
       <div className="ml-64 p-6 w-full">
-        <Topbar />
+        {/* <Topbar /> */}
 
         {/* STAT CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">

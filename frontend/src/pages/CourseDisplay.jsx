@@ -5,6 +5,29 @@ import axios from "axios";
 import { FaStar } from "react-icons/fa";
 
 function CourseDisplay() {
+
+      // const { course_id } = useParams();
+
+      // useEffect(() => {
+      //   trackActivity();
+      // }, []);
+
+      // const trackActivity = async () => {
+      //   try {
+      //     const user_id = localStorage.getItem("user_id"); // stored after login
+
+      //     await Api.post("/activity/track", {
+      //       user_id: parseInt(user_id),
+      //       course_id: parseInt(course_id)
+      //     });
+
+      //     console.log("Activity tracked");
+      //   } catch (error) {
+      //     console.error("Error tracking activity:", error);
+      //   }
+      // };
+
+
   const { id } = useParams();
   const [coursedata, setCourseData] = useState([]);
   const [course, setCourse] = useState(null);
@@ -182,7 +205,7 @@ function CourseDisplay() {
               >
                 <div className="flex gap-4 hover:bg-gray-50 p-3 rounded-lg transition">
                   <div className="w-32 h-20 md:w-40 md:h-28 bg-gray-200 rounded-lg overflow-hidden">
-                    <img src={`https://rwompwlcjbigfbnovqxu.supabase.co/storage/v1/object/public/course_thumbnail/${data.thumbnail}`} className="w-full h-full object-cover" />
+                    <img src={`http://localhost:8000/Thumbnail/${data.thumbnail}`} className="w-full h-full object-cover" />
                   </div>
 
                   <div className="flex flex-col justify-between flex-1">
