@@ -3,29 +3,54 @@ import models
 from database import engine,SessionLocal
 from sqlalchemy.orm import Session
 from routes import blog
-from auth import hash_password,verify_password,create_access_token,decode_access_token
+from auth.auth import hash_password, verify_password, create_access_token, decode_access_token
 from database import get_db
+from auth.dependencies import verify_token
 
 router=APIRouter(tags=["Users"])
         
 # with hashed
+# @router.post("/stud_registration")
+# def register_user( 
+#     fullname: str = Form(...),
+#     email: str = Form(...),
+#     password: str = Form(...),
+#     db: Session = Depends(get_db)
+# ):
+
+#     # Check email exists
+#     existing_user = db.query(models.Users).filter(models.Users.email == email).first()
+#     if existing_user:
+#         raise HTTPException(status_code=400, detail="Email already registered")
+
+#     #  HASH PASSWORD
+#     hashed_pwd = hash_password(password)
+
+#     # Save user
+#     new_user = models.Users(
+#         fullname=fullname,
+#         email=email,
+#         password=hashed_pwd
+#     )
+#     db.add(new_user)
+#     db.commit()
+#     db.refresh(new_user)
+
+#     return {"message": "Registration successful"}
+
 @router.post("/stud_registration")
-def register_user( 
+def stud_registration(
     fullname: str = Form(...),
     email: str = Form(...),
-    password: str = Form(...),
+    password: str = Form(...),  # already SHA256 from frontend
     db: Session = Depends(get_db)
 ):
+    user = db.query(models.Users).filter(models.Users.email == email).first()
+    if user:
+        raise HTTPException(400, "Email already exists")
 
-    # Check email exists
-    existing_user = db.query(models.Users).filter(models.Users.email == email).first()
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-
-    #  HASH PASSWORD
     hashed_pwd = hash_password(password)
 
-    # Save user
     new_user = models.Users(
         fullname=fullname,
         email=email,
@@ -34,45 +59,53 @@ def register_user(
 
     db.add(new_user)
     db.commit()
-    db.refresh(new_user)
 
-    return {"message": "Registration successful"}
+    return {"message": "User registered"}
 
 
 @router.get("/users_display")
-def users_display(db:Session=Depends(get_db)):
-      data = db.query(models.Users).order_by(models.Users.user_id.asc()).all()
-      return data
+def users_display(
+    # payload: dict = Depends(verify_token),  
+    db: Session = Depends(get_db)
+):
+    data = db.query(models.Users).all()
+    return data
+
+
+@router.get("/get_student_by_user/{user_id}")
+def get_student_by_user(user_id: int, db: Session = Depends(get_db)):
+
+    student = db.query(models.Student).filter(
+        models.Student.user_id == user_id
+    ).first()
+
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+
+    return {
+        "stud_id": student.stud_id
+    }
 
 
 @router.post("/login")
-def login_user(
+def login(
     email: str = Form(...),
-    password: str = Form(...),
-    db: Session = Depends(get_db),
+    password: str = Form(...),  # SHA256
+    db: Session = Depends(get_db)
 ):
-    user = db.query(models.Users).filter(
-        models.Users.email == email
-    ).first()
+    user = db.query(models.Users).filter(models.Users.email == email).first()
 
-    if not user:
-        raise HTTPException(status_code=400, detail="Invalid email or password")
-
-    # VERIFY HASHED PASSWORD
-    if not verify_password(password, user.password):
-        raise HTTPException(status_code=400, detail="Invalid email or password")
+    if not user or not verify_password(password, user.password):
+        raise HTTPException(400, "Invalid credentials")
 
     token = create_access_token({"user_id": user.user_id})
 
     return {
-        "success": True,
         "token": token,
-        "user_id": user.user_id,
-        "user": {
-            "fullname": user.fullname,
-            "email": user.email
-        }
+        "user_id": user.user_id 
     }
+
+
 
 
 #  GET LOGGED-IN USER

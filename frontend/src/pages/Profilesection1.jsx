@@ -5,55 +5,110 @@ import Api from "../services/Api";
 import { useParams } from "react-router-dom";
 
 function Profilesection1() {
-  const { stud_id } = useParams();
-  const [isEditing, setIsEditing] = useState(false);
-  const [states, setStates] = useState([]);
-  const [cities, setCities] = useState([]);
-  const [user, setUser] = useState(null);
 
-  const [formData, setFormData] = useState({
-    fullname: "",
-    age: "",
-    education: "",
-    state_id: "",
-    city_id: "",
-    skills: [],
-    languages: [],
-  });
+    const { stud_id } = useParams();
 
+<<<<<<< HEAD
   // LOAD PROFILE 
   useEffect(() => {
     if (!stud_id) return;
+=======
+      const [authUser, setAuthUser] = useState(null);
+      const [userId, setUserId] = useState(null);
+>>>>>>> 80d6e8a (updated-20)
 
-    const fetchProfile = async () => {
-      try {
-        const res = await Api.get(`/single_profile/${stud_id}`);
-        const data = res.data;
+      const [isEditing, setIsEditing] = useState(false);
+      const [states, setStates] = useState([]);
+      const [cities, setCities] = useState([]);
 
-        setUser(data.user);
+      const [formData, setFormData] = useState({
+        fullname: "",
+        age: "",
+        education: "",
+        state_id: "",
+        city_id: "",
+        skills: [],
+        languages: [],
+      });
 
-        setFormData({
-          fullname: data.user?.fullname || "",
-          age: data.age || "",
-          education: data.education || "",
-          state_id: data.state_id || "",
-          city_id: data.city_id || "",
-          skills: data.skills
-            ? data.skills.split(",").map((s) => s.trim())
-            : [],
-          languages: data.language
-            ? data.language.split(",").map((l) => l.trim())
-            : [],
-        });
+      // ================= GET LOGGED USER =================
+      useEffect(() => {
+        const token = localStorage.getItem("token");
 
-        if (data.state_id) {
-            fetchCities(data.state_id);
+        Api.get("/me", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+          .then((res) => {
+            console.log("Logged User:", res.data);
+
+            // FIXED HERE
+            setUserId(res.data.user_id);
+            setAuthUser(res.data);
+
+            setFormData((prev) => ({
+              ...prev,
+              fullname: res.data.fullname || ""
+            }));
+          })
+          .catch((err) => console.log(err));
+      }, []);
+
+      // ================= LOAD PROFILE =================
+    useEffect(() => {
+        if (!userId) return;
+
+        const fetchProfile = async () => {
+          try {
+            const res = await Api.get(`/get_student_by_user/${userId}`);
+            const data = res.data;
+
+            setFormData((prev) => ({
+              ...prev,
+              age: data.age || "",
+              education: data.education || "",
+              state_id: data.state_id || "",
+              city_id: data.city_id || "",
+              skills: data.skills
+                ? data.skills.split(",").map((s) => s.trim())
+                : [],
+              languages: data.language
+                ? data.language.split(",").map((l) => l.trim())
+                : [],
+            }));
+
+            if (data.state_id) {
+              fetchCities(data.state_id);
+            }
+
+          } catch (err) {
+            console.log("Profile Error:", err);
+          }
+        };
+
+        fetchProfile();
+      }, [userId]);
+
+
+      // ================= LOAD STATES =================
+      useEffect(() => {
+        Api.get("/states")
+          .then((res) => setStates(res.data))
+          .catch((err) => console.log(err));
+      }, []);
+
+      // ================= LOAD CITIES =================
+      const fetchCities = async (stateId) => {
+        try {
+          const res = await Api.get(`/cities/${stateId}`);
+          setCities(res.data);
+        } catch (error) {
+          console.error(error);
         }
-      } catch (err) {
-        console.log(err);
-      }
-    };
+      };
 
+<<<<<<< HEAD
     fetchProfile();
   }, [stud_id]);
 
@@ -76,12 +131,16 @@ function Profilesection1() {
 
   // INPUT HANDLER 
   const handleChange = (e) => {
+=======
+      // ================= INPUT =================
+      const handleChange = (e) => {
+>>>>>>> 80d6e8a (updated-20)
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-  };  
+  };
 
   const handleStateChange = (e) => {
     const stateId = e.target.value;
@@ -92,72 +151,42 @@ function Profilesection1() {
       city_id: "",
     }));
 
-    if (stateId) {
-      fetchCities(stateId);   
-    } else {
-      setCities([]);
-    }
+    if (stateId) fetchCities(stateId);
+    else setCities([]);
   };
 
   const handleMultiSelect = (e, field) => {
-    const selectedOptions = Array.from(
+    const selectedValues = Array.from(
       e.target.selectedOptions,
       (option) => option.value
     );
 
     setFormData((prev) => ({
       ...prev,
-      [field]: selectedOptions,
+      [field]: selectedValues,
     }));
   };
 
-    useEffect(() => {
-  Api.get("/me")
-    .then((res) => {
-      setUser(res.data);
-    })
-    .catch((err) => console.log(err));
-}, []);
+      // ================= UPDATE =================
+      const handleUpdate = async () => {
+          const payload = {
+            age: formData.age ? Number(formData.age) : null,
+            education: formData.education || null,
+            state_id: formData.state_id ? Number(formData.state_id) : null,
+            city_id: formData.city_id ? Number(formData.city_id) : null,
+            skills: formData.skills,
+            language: formData.languages,
+          };
 
-  
- const handleUpdate = async () => {
-
-      if (!stud_id) {
-      alert("User ID missing!");
-      return;
-    }
-
-
-   const payload = {
-    age: formData.age ? Number(formData.age) : null,
-    education: formData.education || null,
-    state_id: formData.state_id ? Number(formData.state_id) : null,
-    city_id: formData.city_id ? Number(formData.city_id) : null,
-    skills: formData.skills.length ? formData.skills.join(",") : null,
-    language: formData.languages.length ? formData.languages.join(",") : null,
-  };
-
-  console.log("Sending Data:", payload);
-
-  try {
-
-  await Api.post(`/insert_update_profile/${stud_id}`, {
-    age: formData.age ? Number(formData.age) : null,
-    education: formData.education || null,
-    state_id: formData.state_id ? Number(formData.state_id) : null,
-    city_id: formData.city_id ? Number(formData.city_id) : null,
-    skills: formData.skills.length ? formData.skills.join(",") : null,
-    language: formData.languages.length ? formData.languages.join(",") : null
-  });
-
-  alert("Updated Successfully!");
-  setIsEditing(false);
-
-} catch (err) {
-  console.log(err.response?.data);
-  alert("Update Failed");
-}
-};
+          try {
+            await Api.post(`/insert_update_profile/${userId}`, payload);
+            alert("Updated Successfully!");
+            setIsEditing(false);
+          } catch (err) {
+            console.log(err);
+            alert("Update Failed");
+          }
+        };
 
   // OPTIONS
   const educationOptions = [
@@ -284,7 +313,12 @@ function Profilesection1() {
                 >
                   Cancel
                 </button>
+<<<<<<< HEAD
                 <button onClick={handleUpdate} className="bg-indigo-500 text-white px-5 py-2 rounded-full" >Save</button>
+=======
+
+                <button onClick={handleUpdate} className="bg-indigo-500 text-white px-5 py-2 rounded-full">Save</button>
+>>>>>>> 80d6e8a (updated-20)
               </div>
             )}
           </div>
@@ -298,7 +332,7 @@ function Profilesection1() {
                <input
                 type="text"
                 name="fullname"
-                value={user?.fullname||""}
+                value={formData.fullname}
                 disabled={!isEditing}
                 onChange={handleChange}
                 className={`w-full p-3 rounded-xl border ${
@@ -312,7 +346,7 @@ function Profilesection1() {
                <label className="block text-gray-600 mb-2">Email</label>
                <input
                  type="email"
-                 value={user?.email || ""}
+                 value={authUser?.email || ""}
                  disabled
                  className="w-full p-3 rounded-xl bg-gray-100 border"
                />
@@ -397,14 +431,15 @@ function Profilesection1() {
           {/* Skills */}
           <div className="mt-6">
             <label className="block text-gray-600 mb-2">Skills</label>
-            <select
+
+           <select
               multiple
               value={formData.skills}
               disabled={!isEditing}
               onChange={(e) => handleMultiSelect(e, "skills")}
               className={`w-full p-3 rounded-xl border ${
-                  isEditing ? "border-indigo-400" : "bg-gray-100"
-                }`}
+                isEditing ? "border-indigo-400" : "bg-gray-100"
+              }`}
             >
               {skillOptions.map((skill, i) => (
                 <option key={i} value={skill}>
@@ -433,6 +468,7 @@ function Profilesection1() {
               ))}
             </select>
           </div>
+          
 
         </div>
       </div>

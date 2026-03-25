@@ -46,5 +46,5 @@ class StudentCreate(BaseModel):
     education: Optional[str]= None
     state_id: Optional[int]= None
     city_id: Optional[int]= None
-    skills: Optional[str]= None
-    language: Optional[str]= None
+    skills: Optional[List[str]]=None
+    language: Optional[List[str]]=None

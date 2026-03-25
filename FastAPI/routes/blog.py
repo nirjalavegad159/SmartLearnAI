@@ -24,7 +24,6 @@ def blog(
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(blogimage.file, buffer)
 
-
     db_blog = models.Blog(
         blogername=blogername,
         blogerrole=blogerrole,
@@ -70,3 +69,13 @@ async def single_data(blog_id:int,db:Session=Depends(get_db)):
     if not result:
         raise HTTPException(status_code=404,detail="Employee not found")
     return result
+
+
+@router.delete("/blogs/{blog_id}")
+def delete_blog(blog_id:int,db:Session=Depends(get_db)):
+    blog = db.query(models.Blog).filter(models.Blog.blog_id==blog_id).first()
+    if not blog:
+        raise HTTPException(status_code=404,detail="Blog not found")
+    db.delete(blog)
+    db.commit()
+    return {"message":f"State with ID {blog_id} deleted successfully"}

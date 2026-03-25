@@ -7,11 +7,24 @@ import {
   FaBlog,
   FaUserGraduate,
   FaCity,
-  FaMapMarkedAlt
+  FaMapMarkedAlt,
+  FaSignOutAlt
 } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 
 function Sidebar() {
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Clear auth data (if stored)
+    localStorage.removeItem("token"); // optional
+    sessionStorage.clear(); // optional
+
+    // Redirect to login page
+    navigate("/");
+  };
+
 
   const menuClass = ({ isActive }) =>
     `flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300
@@ -37,7 +50,7 @@ function Sidebar() {
       {/* Menu */}
       <ul className="space-y-2 px-4 mt-6 flex-1 overflow-y-auto">
 
-        <NavLink to="/" className={menuClass}>
+        <NavLink to="/dashboard" className={menuClass}>
           <FaHome className="text-lg" />
           Dashboard
         </NavLink>
@@ -81,6 +94,19 @@ function Sidebar() {
           <FaMapMarkedAlt className="text-lg" />
           States
         </NavLink>
+
+
+        <div className="p-4 border-t border-gray-800">
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 w-full px-4 py-3 rounded-lg
+                    text-gray-400 hover:bg-red-600 hover:text-white
+                    transition-all duration-300"
+        >
+          <FaSignOutAlt className="text-lg" />
+          Logout
+        </button>
+      </div>
 
       </ul>
 

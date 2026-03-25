@@ -9,6 +9,9 @@ import os
 
 router = APIRouter(tags=["Profile"])
 
+STUDENT_DIR = "SharedVideos/StudentPhotos"
+os.makedirs(STUDENT_DIR, exist_ok=True)
+
 @router.get("/states")
 def get_states(db:Session=Depends(get_db)):
       return db.query(models.State).all()
@@ -43,24 +46,11 @@ def single_profile(stud_id: int, db: Session = Depends(get_db)):
         "state_name": stud_data.state.state_name if stud_data.state else None,
         "city_name": stud_data.city.city_name if stud_data.city else None,
         "skills": stud_data.skills,
-        "language": stud_data.language
+        "language": stud_data.language,
+        "photo":stud_data.photo
     }
 
-
-
-# @router.get("/get_student_by_user/{user_id}")
-# def get_student_by_user(user_id: int, db: Session = Depends(get_db)):
-#     try:
-#         student = db.query(models.Student)\
-#             .filter(models.Student.user_id == user_id)\
-#             .first()
-
-#         return student
-#     except Exception as e:
-#         print("ERROR:", e)
-#         raise e
     
-
 @router.get("/get_student_by_user/{user_id}")
 def get_student_by_user(user_id: int, db: Session = Depends(get_db)):
     
@@ -74,14 +64,13 @@ def get_student_by_user(user_id: int, db: Session = Depends(get_db)):
         db.add(student)
         db.commit()
         db.refresh(student)
-
     return student
 
 
 @router.post("/insert_update_profile/{user_id}")
 def insert_update_profile(
     user_id: int,
-    data: StudentCreate,
+    data:StudentCreate,
     db: Session = Depends(get_db)
 ):
 
@@ -113,7 +102,7 @@ def insert_update_profile(
             state_id=data.state_id,
             city_id=data.city_id,
             skills=data.skills,
-            language=data.language
+            language=data.language,
         )
 
         db.add(new_student)
