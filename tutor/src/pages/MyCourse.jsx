@@ -71,7 +71,7 @@ function Course() {
                   <img
                     src={`http://localhost:8000/Thumbnail/${data.thumbnail}`}
                     alt={data.course_title}
-                    className="w-full h-auto object-cover transition-transform duration-300 hover:scale-105"
+                    className="w-full h-50 object-cover transition-transform duration-300 hover:scale-105"
                   />
                 </div>
 

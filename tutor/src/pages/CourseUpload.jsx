@@ -7,6 +7,7 @@ import {
   FiVideo,
   FiTag,
 } from "react-icons/fi";
+import MainLayout from "../layout/MainLayout";
 
 function CourseUpload()
 {
@@ -84,6 +85,7 @@ const handleSubmit = async (e) => {
 
   // console.log("skill_level", skill_level);
   return (
+    <MainLayout>
   <div className="flex-1 flex justify-center px-6">
             <SideBar />
       <div className="w-full max-w-5xl bg-white rounded-2xl shadow-xl p-10 border border-gray-200">
@@ -385,6 +387,7 @@ const handleSubmit = async (e) => {
       <h3>{prerequisites}</h3> */}
       
     </div>
+    </MainLayout>
   );
 }
 

@@ -50,7 +50,7 @@ function CourseDetail() {
   return (
     <div className="w-full min-h-screen bg-gray-100">
 
-      {/* ====================== HEADER ====================== */}
+      {/*HEADER*/}
       <header className="w-full fixed top-0 left-0 bg-white/70 backdrop-blur-sm shadow-sm 
         z-50 py-3 px-5 md:px-10 flex items-center justify-between">
 

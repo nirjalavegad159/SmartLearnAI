@@ -3,7 +3,7 @@ import models
 from database import engine,SessionLocal, SessionLocal
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from schemas.course import CourseRequest
+from schemas.course import CourseRequest,CourseRatingRequest
 from typing import Annotated,Literal
 from pydantic import Field
 import shutil
@@ -123,3 +123,55 @@ def delete_course(course_id: int, db: Session = Depends(get_db)):
     db.commit()
 
     return {"status": "success", "message": "Course + files deleted successfully"}
+
+
+@router.post("/rate_course")
+def rate_course(data: CourseRatingRequest, db: Session = Depends(get_db)):
+
+    course = db.query(models.Course).filter(
+        models.Course.course_id == data.course_id
+    ).first()
+
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+
+    total = (course.rating or 0) * (course.total_reviews or 0)
+    total += data.rating
+
+    course.total_reviews = (course.total_reviews or 0) + 1
+    course.rating = total / course.total_reviews
+
+    db.commit()
+    db.refresh(course)
+
+    return {"message": "Rating added", "rating": course.rating}
+
+# @router.post("/rate_course")
+# def rate_course(data: CourseRatingRequest, db: Session = Depends(get_db), user=Depends(get_current_user)):
+
+#     existing = db.query(models.Rating).filter(
+#         models.Rating.user_id == user.id,
+#         models.Rating.course_id == data.course_id
+#     ).first()
+
+#     if existing:
+#         existing.rating = data.rating   # ✅ update rating
+#     else:
+#         new_rating = models.Rating(
+#             user_id=user.id,
+#             course_id=data.course_id,
+#             rating=data.rating
+#         )
+#         db.add(new_rating)
+
+#     db.commit()
+
+# @router.get("/get_user_rating/{course_id}")
+# def get_user_rating(course_id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
+
+#     rating = db.query(models.Rating).filter(
+#         models.Rating.user_id == user.id,
+#         models.Rating.course_id == course_id
+#     ).first()
+
+#     return {"rating": rating.rating if rating else 0}

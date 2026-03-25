@@ -1,11 +1,11 @@
-from fastapi import Depends,APIRouter
+from fastapi import Depends,APIRouter ,UploadFile
 import models
 from database import engine,SessionLocal
 from sqlalchemy.orm import Session
 from sqlalchemy.orm import joinedload
 from schemas.stud_profile import StudentCreate
 from database import get_db
-
+import os
 
 router = APIRouter(tags=["Profile"])
 
@@ -132,3 +132,37 @@ def students_display(db:Session=Depends(get_db)):
 def total_student(db: Session = Depends(get_db)):
     count = db.query(models.Student).count()
     return {"total_student": count}
+
+# @router.post("/profile_photo/{user_id}")
+# def profile_photo(
+#     user_id: int,
+#     photo:UploadFile=File(...),
+#     db: Session = Depends(get_db)
+# ):
+#     # Check existing student
+#     student = db.query(models.Student).filter(
+#         models.Student.user_id == user_id
+#     ).first()
+
+#     filename = photo.filename
+#     file_path = f"{STUDENT_DIR}/{photo.filename}"
+#     with open(file_path, "wb") as buffer:
+#         shutil.copyfileobj(photo.file, buffer)
+
+#     if student:
+#         # UPDATE
+#         student.photo = filename
+#         db.commit()
+#         db.refresh(student)
+#         return {"status": True, "message": "Student Photo Updated Successfully"}
+
+#     else:
+#         # INSERT
+#         new_student = models.Student(
+#             user_id=user_id,
+#             photo=filename
+#         )
+#         db.add(new_student)
+#         db.commit()
+#         db.refresh(new_student)
+#         return {"status": True, "message": "Student photo Inserted Successfully"}
