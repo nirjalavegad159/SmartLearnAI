@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import Api from "../services/Api";
-import { hashPassword } from "../utils/hash";
+// import { hashPassword } from "../utils/hash";
 import { jwtDecode } from "jwt-decode";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -13,196 +13,54 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-<<<<<<< HEAD
-  const handleLogin = async (e) => {
+
+const handleLogin = async (e) => {
   e.preventDefault();
 
   const formData = new FormData();
   formData.append("email", email);
   formData.append("password", password);
-  formData.append("role", role);
 
   try {
-    const res = await Api.post("/login", formData);
-=======
+    // LOGIN
+    await Api.post("/login", formData);
 
-  // const handleLogin = async (e) => {
-  //     e.preventDefault();
+    // GET USER FROM COOKIE
+    const meRes = await Api.get("/me");
+    const user_id = meRes.data.user_id;
 
-  //     try {
-  //       const hashed = await hashPassword(password);
-  //       console.log("HASHED PASSWORD:", hashed);
-  //       const formData = new FormData();
-  //       formData.append("email", email);
-  //        formData.append("password", hashed);
+    console.log("USER:", meRes.data);
 
-  //       const res = await Api.post("/login", formData);
-  //       localStorage.setItem("token", res.data.token);
-  //       console.log("Login Response:", res.data);
+    // ================= STUDENT =================
+    if (role === "Student") {
+      const studentRes = await Api.get("/get_student_by_user");
 
-  //       if (!res.data.token) {
-  //         alert("Invalid Credentials!");
-  //         return;
-  //       }
-
-  //       // Store token & user
-  //       localStorage.setItem("token", res.data.token);
-  //       localStorage.setItem("user_id", res.data.user_id);
-
-  //       //  Get student data
-  //       const studentRes = await Api.get(
-  //         `/get_student_by_user/${res.data.user_id}`
-  //       );
->>>>>>> 80d6e8a (updated-20)
-
-  //       const stud_id = studentRes.data.stud_id;
-
-<<<<<<< HEAD
-      const user_id = res.data.user_id;
-
-      if (role === "Student") {
-        const studentRes = await Api.get(`/get_student_by_user/${user_id}`);
-        // navigate(`//${studentRes.data.stud_id}`);
-         navigate(`/`);
+      if (studentRes.data.exists) {
+        navigate("/home");
+      } else {
+        navigate("/exampleprofile");
       }
-      // if (role === "Instructor") {
-      //   const studentRes = await Api.get(`/get_instructor_by_user/${user_id}`);
-      //   window.location.href = "http://localhost:5174/dashboard";
-      // }
-      if (role === "Instructor") {
-        try {
-          const instructorRes = await Api.get(`/get_instructor_by_user/${user_id}`);
-
-          // If instructor exists
-          if (instructorRes.data && instructorRes.data.instructor_id) {
-            window.location.href = "http://localhost:5174/dashboard"; // already created profile
-          } 
-          // If no profile found
-          else {
-            window.location.href = "http://localhost:5174/InstructorSetup1"; // profile setup page
-          }
-
-        } catch (error) {
-          //  API error (mostly means profile not found)
-          console.log("Instructor profile not found");
-
-          window.location.href = "http://localhost:5174/ProfileSetup";
-        }
-      }
-
-    } else {
-      alert("Invalid Credentials!");
     }
+
+    // ================= INSTRUCTOR =================
+    else if (role === "Instructor") {
+      const instructorRes = await Api.get(`/get_instructor_by_user/${user_id}`);
+
+      if (instructorRes.data.exists) {
+        window.location.href = "http://localhost:5174/dashboard";
+      } else {
+        window.location.href = `http://localhost:5174/ProfileSetup?user_id=${user_id}`;
+      }
+    }
+    navigate("/home");
+    window.location.reload();
 
   } catch (err) {
     console.error(err);
-    alert("Login Failed");
+    alert(err.response?.data?.detail || "Login Failed");
   }
 };
-=======
-  //       // Navigate once
-  //       navigate(`/exampleprofile/${stud_id}`);
 
-  //     } catch (err) {
-  //       console.error(err);
-  //       alert("Login Failed");
-  //     }
-  //   };
-
-
-  const handleLogin = async (e) => {
-      e.preventDefault();
-
-      try {
-        const hashed = await hashPassword(password);
-
-        const formData = new FormData();
-        formData.append("email", email);
-        formData.append("password", hashed);
-
-        const res = await Api.post("/login", formData);
-
-        //  store token
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("user_id", res.data.user_id);
-
-
-        console.log("LOGIN RESPONSE:", res.data);
-
-        //  fetch student
-        const studentRes = await Api.get(
-          `/get_student_by_user/${res.data.user_id}`
-        );
-
-        const stud_id = studentRes.data.stud_id;
-
-        navigate(`/exampleprofile/${stud_id}`);
-
-      } catch (err) {
-        console.error(err);
-        alert("Login Failed");
-      }
-    };
-
-
->>>>>>> 80d6e8a (updated-20)
-
-// const handleLogin = async (e) => {
-//   e.preventDefault();
-
-//   const formData = new FormData();
-//   formData.append("email", email);
-//   formData.append("password", password);
-
-//   try {
-//     const res = await Api.post("/login", formData);
-//     localStorage.setItem("user_id", res.data.user_id);
-//     console.log("Login Response:", res.data);
-
-//     const user_id = res.data.user_id
-
-//     // Role Condition
-//     if (role === "Student") {
-//       const studentRes = await Api.get(`/get_student_by_user/${user_id}`);
-//       navigate(`/exampleprofile/${studentRes.data.stud_id}`);
-//     } 
-//     else if (role === "Instructor") {
-//       // navigate("/instructor-dashboard");
-//        window.location.href = "http://localhost:5174/dashboard";
-//     }
-
-//     // const studentRes = await Api.get(`/get_student_by_user/${user_id}`)
-
-//     // navigate(`/profile/${studentRes.data.stud_id}`)
-
-//     if (res.data.success) {
-//       localStorage.setItem("token", res.data.token);
-//       localStorage.setItem("user_id", res.data.user_id);
-
-//       const user_id = res.data.user_id;
-//       console.log("Stored user_id:", user_id);
-//       localStorage.setItem("token", res.data.token); 
-
-//       if (!user_id) {
-//         alert("User ID not found in response!");
-//         return;
-//       }
-
-//       const studentRes = await Api.get(`/get_student_by_user/${user_id}`);
-
-//       const stud_id = studentRes.data.stud_id;
-      
-//       navigate(`/exampleprofile/${stud_id}`);
-//     } 
-//     else {
-//       alert("Invalid Credentials!");
-//     }
-
-//   } catch (err) {
-//     console.error(err);
-//     alert("Login Failed");
-//   }
-// };
 
   return (
     <div>
@@ -252,23 +110,7 @@ function Login() {
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
-{/* 
-              <div className="mb-4">
-                <label className="block text-sm mb-1">Password</label>
-                <input
-                  type="password"
-                  className="w-full border rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <span
-                  className="absolute right-3 top-9 text-sm text-blue-600 cursor-pointer"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? "Hide" : "Show"}
-                </span>
 
-              </div> */}
               <div className="mb-4 relative">
                   <label className="block text-sm mb-1">Password</label>
 

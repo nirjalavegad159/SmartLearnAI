@@ -4,35 +4,52 @@ import Api from "../services/Api.jsx";
 import axios from "axios";
 import { FaStar } from "react-icons/fa";
 
+
 function CourseDisplay() {
-
-      // const { course_id } = useParams();
-
-      // useEffect(() => {
-      //   trackActivity();
-      // }, []);
-
-      // const trackActivity = async () => {
-      //   try {
-      //     const user_id = localStorage.getItem("user_id"); // stored after login
-
-      //     await Api.post("/activity/track", {
-      //       user_id: parseInt(user_id),
-      //       course_id: parseInt(course_id)
-      //     });
-
-      //     console.log("Activity tracked");
-      //   } catch (error) {
-      //     console.error("Error tracking activity:", error);
-      //   }
-      // };
-
 
   const { id } = useParams();
   const [coursedata, setCourseData] = useState([]);
   const [course, setCourse] = useState(null);
   const videoRef = useRef(null);
    const [userRating, setUserRating] = useState(0);
+
+   useEffect(() => {
+  const trackView = async () => {
+    try {
+      console.log("Calling TRACK API:", id);
+
+      const res = await Api.post(
+        `/track_course_view/${id}`,
+        {},
+        { withCredentials: true }
+      );
+
+      console.log("TRACK SUCCESS:", res.data);
+
+    } catch (err) {
+      console.log("TRACK ERROR:", err.response);
+    }
+  };
+
+  trackView();
+}, [id]);
+
+
+useEffect(() => {
+  const trackView = async () => {
+    try {
+      await Api.post(`/track_course_view/${id}`, {}, {
+        withCredentials: true
+      });
+
+      console.log("TRACK SUCCESS");
+    } catch (err) {
+      console.log("TRACK ERROR:", err.response);
+    }
+  };
+
+  trackView();
+}, [id]);
 
   // Fetch all courses
   useEffect(() => {
@@ -67,7 +84,6 @@ function CourseDisplay() {
 
 
  
-
   const handleRating = async (value) => {
     try {
       setUserRating(value); // UI update instantly
@@ -93,12 +109,11 @@ function CourseDisplay() {
     <div className="w-full min-h-screen bg-gray-100">
 
       {/*HEADER */}
-      <header className="w-full fixed top-0 left-0 bg-white/70 backdrop-blur-sm shadow-sm 
+      {/* <header className="w-full fixed top-0 left-0 bg-white/70 backdrop-blur-sm shadow-sm 
         z-50 py-3 px-5 md:px-10 flex items-center justify-between">
 
         <div className="flex items-center gap-4">
           <Link to={"/"}>
-            {/* Back button (optional) */}
           </Link>
 
           <div className="flex items-center gap-1 cursor-pointer">
@@ -108,15 +123,15 @@ function CourseDisplay() {
             </h2>
             <span className="text-xs font-bold text-gray-600">AI</span>
           </div>
-        </div>
+        </div> */}
 
         {/* Course Title */}
-        <h1 className="hidden md:block text-lg font-semibold text-gray-900 truncate max-w-[400px]">
+        {/* <h1 className="hidden md:block text-lg font-semibold text-gray-900 truncate max-w-[400px]">
           {course.course_title}
-        </h1>
+        </h1> */}
 
         {/* Instructor */}
-        <div className="flex items-center gap-3 hover:bg-gray-100 px-3 py-1 rounded-lg transition">
+        {/* <div className="flex items-center gap-3 hover:bg-gray-100 px-3 py-1 rounded-lg transition">
           <img
             src="/images/author_logo.png"
             className="w-10 h-10 rounded-full border shadow"
@@ -126,7 +141,8 @@ function CourseDisplay() {
             <p className="text-xs text-gray-500">Instructor</p>
           </div>
         </div>
-      </header>
+      </header> */}
+      
 
       {/* PAGE CONTENT */}
       <div className="mx-auto max-w-6xl pt-28 px-4 md:px-8 pb-16 space-y-10">
